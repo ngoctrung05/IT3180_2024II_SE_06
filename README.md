@@ -25,3 +25,8 @@ Truy cập:
 ```
 http://localhost:8080/login
 ```
+## 6. Cấu trúc thư mục
+![Screenshot 2025-04-20 222922](https://github.com/user-attachments/assets/f39b31d8-d449-4853-825d-c13b5ad6cc33)
+![Screenshot 2025-04-20 222937](https://github.com/user-attachments/assets/3991ab5f-dfc2-4ec3-96df-8776d4656055)
+
+
