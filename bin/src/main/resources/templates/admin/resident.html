@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "http://www.thymleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin BlueMoon</title>
+
+ <!-- Font Awesome Icons -->
+  <link rel="stylesheet" th:href="@{/css/all.min.css}">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" th:href="@{https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback}">
+  <!-- IonIcons -->
+  <link rel="stylesheet" th:href="@{https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css}">
+  <!-- Theme style -->
+  <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
+</head>
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a th:href="@{/admin/admin_dashboard.html}" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" class="nav-link">Contact</a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Navbar Search -->
+      <li class="nav-item">
+        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+          <i class="fas fa-search"></i>
+        </a>
+        <div class="navbar-search-block">
+          <form class="form-inline">
+            <div class="input-group input-group-sm">
+              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+              <div class="input-group-append">
+                <button class="btn btn-navbar" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </li>
+
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-comments"></i>
+          <span class="badge badge-danger navbar-badge">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img th:src="@{images/avatar.jpg}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Brad Diesel
+                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">Call me whenever you can...</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  John Pierce
+                  <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">I got your message bro</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+              <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <div class="media-body">
+                <h3 class="dropdown-item-title">
+                  Nora Silvester
+                  <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                </h3>
+                <p class="text-sm">The subject goes here</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+              </div>
+            </div>
+            <!-- Message End -->
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+        </div>
+      </li>
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-warning navbar-badge">15</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">15 Notifications</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-envelope mr-2"></i> 4 new messages
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-users mr-2"></i> 8 friend requests
+            <span class="float-right text-muted text-sm">12 hours</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-file mr-2"></i> 3 new reports
+            <span class="float-right text-muted text-sm">2 days</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+          <i class="fas fa-th-large"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+	
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+      <span class="brand-text font-weight-light">SE_06 IT3180</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img th:src="@{/images/profile.png}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block"><span th:text="${user}"></span>
+</a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+       <!-- Trang chủ --> 
+          <li class="nav-item">
+            <a th:href="@{/admin/dashboard}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+          
+          <!-- Quảm lí dân -->
+          <li class="nav-item menu-open">
+            <a  th:href="@{/admin/resident}" class="nav-link active">
+              <i class="fas fa-users"></i>
+              <p>
+                Quản lí cư dân
+              </p>
+            </a>
+             <ul class = "nav nav-treeview">
+          </ul>
+          </li>
+          
+          <!-- Quản lí tài khoản -->
+          <li class="nav-item">
+                <a th:href="@{/admin/account}" class="nav-link">
+                  <i class="fas fa-user-shield"></i>
+                  <p>Quản lí tài khoản</p>
+                </a>
+              </li>
+         
+          <!-- Quảm lí khoản phí -->
+          <li class="nav-item">
+            <a th:href="@{/admin/billing}" class="nav-link">
+              <i class="fas fa-file-invoice-dollar"></i>
+              <p>
+                Quản lí khoản phí
+              </p>
+            </a>
+          </li>
+          
+          
+          <!-- Thông báo -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-bullhorn"></i>
+              <p>
+                Thông báo
+              </p>
+            </a>
+          </li>
+          
+          <!-- Setiing -->
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-cogs"></i>
+              <p>
+                Cài đặt
+              </p>
+            </a>
+          </li>
+           
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Admin BlueMoon</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Home</a></li>
+              <li class="breadcrumb-item active">Admin BlueMoon</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+	
+    <!-- Main content -->
+	
+
+ <section class="content">
+  <div class="container-fluid">
+	<section class="content">
+	   <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><span th:text="${totalApartments}"></span></h3>
+
+                <p>Tổng Căn hộ</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-building"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3><span th:text="${totalResidents}"></span></h3>
+
+                <p>Tổng cư dân</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3><span th:text="${emptyApartments}"></span></h3>
+
+                <p>Phòng trống</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-person-add"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3>1</h3>
+
+                <p>Khách</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-user-secret"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+ 			 <h3 class="card-title mb-0">QUẢN LÍ DÂN CƯ</h3>
+ 			  <div class="ml-auto">
+				<button type="button" class="btn btn-outline-dark btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modalAddResident" id="addResidentTopBtn">
+				  <i class="fas fa-user-plus mr-1"></i> Thêm cư dân
+				</button>
+				
+  				<button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-default">
+                  <i class="fas fa-house-user mr-1"></i> Thêm căn hộ
+                </button>
+                </div>
+			</div>
+
+
+          <!-- /.card-header -->
+
+          <div class="card-body">
+            <table id="example2" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+				  <th class="text-center">ID</th>
+                  <th class="text-center">ID chủ căn hộ</th>
+                  <th class="text-center">Số điện thoại</th>
+				  <th class="text-center">Diện tích (m2)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Duyệt qua danh sách người dùng -->
+                <tr th:each="apartment : ${apartments}">
+				  <td class="text-center" th:text="${apartment.id}">ID</td>
+                  <td class="text-center" th:text="${apartment.idHouseholder}">ID chủ căn hộ</td>
+				  <td class="text-center" th:text="${apartment.phone}">Số điện thoại</td>
+				  <td class="text-center" th:text="${apartment.area}">Diện tích (m2)</td> 
+				  
+				  <td class="text-center" style="width: 150px;">
+				  	<div class="d-flex align-items-center justify-content-center gap-2">
+						
+						<button style="border: none; background: none; padding: 5px; cursor: pointer;" class="residentButton" th:data-id="${apartment.id}">
+							<i class="fas fa-user-friends"></i>
+						</button>
+
+						<button type="button" class="add-resident-btn" th:data-apartment-id="${apartment.id}" style="border: none; background: none; padding: 5px; cursor: pointer;" data-toggle="modal" data-target="#modalAddResident">
+							<i class="fas fa-user-plus" style="color: #80cffa;"></i>
+						</button>
+				  
+	              		<form th:action="@{/admin/apartment/delete/{id}(id=${apartment.id})}" method="post">
+	              			<button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
+	              		</form>
+				  	</div>
+                  </td>
+				  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+	
+	
+
+	  <!-- /.content-wrapper -->
+
+	  <!-- Control Sidebar -->
+	  <aside class="control-sidebar control-sidebar-dark">
+	    <!-- Control sidebar content goes here -->
+	  </aside>
+	  <!-- /.control-sidebar -->
+
+	  <!-- Main Footer -->
+	  <footer class="main-footer">
+	    <div class="float-right d-none d-sm-inline-block">
+	      <b>Version</b> 1.0
+	    </div>
+	  </footer>
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- REQUIRED SCRIPTS -->
+
+	<!-- jQuery -->
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<!-- Bootstrap -->
+	<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+	<!-- AdminLTE -->
+	<script th:src="@{/js/adminlte.js}"></script>
+
+	<!-- OPTIONAL SCRIPTS -->
+	<script th:src="@{js/Chart.min.js}"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script th:src="@{/js/demo.js}"></script>
+	<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+	<script src="@{/js/pages/dashboard3.js}"></script>
+	
+	<!-- Modal hiển thị danh sách cư dân -->
+	<div class="modal fade" id="residentModal" tabindex="-1" aria-labelledby="residentModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg">
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title" id="residentModalLabel">Danh sách cư dân</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	            <span aria-hidden="true">&times;</span>
+	          </button>
+	        </div>
+	        <div class="modal-body">
+	          <table class="table table-bordered">
+	            <thead>
+	              <tr>
+	                <th class='text-center'>Tên</th>
+	                <th class='text-center'>Quan hệ với chủ hộ</th>
+	                <th class='text-center'>CCCD</th>
+	                <th class='text-center'>Email</th>
+	                <th class='text-center'>Trạng thái</th>
+					<th class='text-center'>Hành động</th>
+	              </tr>
+	            </thead>
+	            <tbody id="residentTableBody">
+	              <!-- Dữ liệu sẽ được chèn bằng JavaScript -->
+	            </tbody>
+	          </table>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+
+	
+	
+<div class="modal fade" id="modalAddResident" tabindex="-1" aria-labelledby="modalAddResidentLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAddResidentLabel">Thêm Cư Dân</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/resident/save}" method="post" id="addResidentForm">
+					<div class="form-group">
+					    <label for="apartment_id">ID căn hộ</label>
+					    <input type="text" class="form-control" id="apartment_id" name="apartment_id" required placeholder="Nhập ID căn hộ">
+					</div>
+					
+                    <div class="form-group">
+                        <label for="name">Tên cư dân</label>
+                        <input type="text" class="form-control" id="name" name="name" required placeholder="Nhập tên cư dân">
+                    </div>
+					
+					<div class="form-group">
+					    <label for="relationshipWithHouseholder">Quan hệ với chủ hộ</label>
+					    <input type="text" class="form-control" id="relationshipWithHouseholder" name="relationshipWithHouseholder" required placeholder="Nhập quan hệ với chủ hộ">
+					</div>
+					
+					<div class="form-group">
+					    <label for="cccd">Số CCCD</label>
+					    <input type="text" class="form-control" id="cccd" name="cccd" placeholder="Nhập số CCCD (có thể bỏ qua)">
+					</div>
+					
+					<div class="form-group">
+					    <label for="email">email</label>
+					    <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email (có thể bỏ qua)">
+					</div>
+					
+					  <div class="form-group">
+					    <label for="status">Trạng thái</label>
+					   <select name="status" id="status" class="form-control" required>
+					      <option value="" disabled selected>-- Chọn trạng thái --</option>
+					      <option value="Còn ở">Còn ở</option>
+					      <option value="Đã rời đi">Đã rời đi</option>
+					    </select>
+					  </div>
+					</div>
+					
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+					  <button type="submit" class="btn btn-primary">Thêm</button>
+					</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+	
+<div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="createAccountLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="createAccountLabel">Thêm căn hộ</h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Đóng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form th:action="@{/admin/apartment/save}" method="post">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="id">ID căn hộ</label>
+            <input type="text" class="form-control" name="id" id="id" required placeholder="Nhập ID căn hộ">
+			<small class="text-danger" id="apartment_id_error" style="display: none;">Vui lòng nhập ID căn hộ hợp lệ</small>
+          </div>
+		  
+		  <div class="form-group">
+             <label for="idHouseholder">ID chủ hộ</label>
+             <input type="text" class="form-control" name="idHouseholder" id="idHouseholder" placeholder="Nhập ID chủ hộ (có thể trống)">
+           </div>
+		   
+		   <div class="form-group">
+		     <label for="phone">Số điện thoại</label>
+		     <input type="number" class="form-control" name="phone" id="phone" placeholder="Nhập số điện thoại chủ hộ (có thể trống)">
+		   </div>
+
+          <div class="form-group">
+            <label for="area">Diện tích</label>
+            <input type="number" class="form-control" name="area" id="area" required placeholder="Nhập diện tích">
+          </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Thêm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript xử lý AJAX -->
+<script>
+    $(document).ready(function() {
+        // Hiển thị danh sách cư dân
+        $(".residentButton").click(function() {
+            var apartmentId = $(this).data("id");
+            var url = "/admin/resident/" + apartmentId;
+
+            $.get(url, function(data) {
+                var content = "";
+                if (data.length === 0) {
+                    content = "<tr><td colspan='6' class='text-center'>Không có cư dân nào</td></tr>";
+                } else {
+                    $.each(data, function(index, resident) {
+                        content += "<tr>";
+                        content += "<td class='text-center'>" + (resident.name || "") + "</td>";
+                        content += "<td class='text-center'>" + (resident.relationshipWithHouseholder || "") + "</td>";
+                        content += "<td class='text-center'>" + (resident.cccd || "") + "</td>";
+                        content += "<td class='text-center'>" + (resident.email || "") + "</td>";
+                        content += "<td class='text-center'>" + (resident.status || "") + "</td>";
+                        content += "<td class='text-center'>";
+                        content += "<button class='btn btn-danger btn-sm delete-resident' data-id='" + resident.id + "'>";
+                        content += "<i class='fas fa-trash-alt'></i>";
+                        content += "</button>";
+                        content += "</td>";
+                        content += "</tr>";
+                    });
+                }
+                $("#residentTableBody").html(content);
+                $("#residentModal").modal("show");
+            }).fail(function(error) {
+                console.error("Lỗi khi lấy dữ liệu:", error);
+                $("#residentTableBody").html("<tr><td colspan='6' class='text-center'>Lỗi khi tải dữ liệu</td></tr>");
+                $("#residentModal").modal("show");
+            });
+        });
+
+        // Xử lý sự kiện xóa cư dân
+        $(document).on("click", ".delete-resident", function() {
+            var residentId = $(this).data("id");
+            var row = $(this).closest("tr"); // Lấy hàng chứa nút xóa
+            var confirmDelete = confirm("Bạn có chắc chắn muốn xóa cư dân này không?");
+            
+            if (confirmDelete) {
+                $.ajax({
+                    url: "/admin/resident/delete/" + residentId,
+                    type: "POST",
+                    success: function(response) {
+                        row.remove(); // Xóa hàng khỏi bảng nếu thành công
+                        if ($("#residentTableBody tr").length === 0) {
+                            $("#residentTableBody").html("<tr><td colspan='6' class='text-center'>Không có cư dân nào</td></tr>");
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Lỗi khi xóa cư dân:", error);
+                        alert("Không thể xóa cư dân. Vui lòng thử lại.");
+                    }
+                });
+            }
+        });
+		
+		$(".add-resident-btn").click(function() {
+		            var apartmentId = $(this).data("apartment-id");
+		            $("#apartment_id").val(apartmentId); // Điền apartment_id
+		            $("#apartment_id").prop("readonly", true); // Khóa trường
+					$("#apartment_id_error").hide();
+		        });
+
+		        // Xử lý nút thêm cư dân trên cùng
+		        $("#addResidentTopBtn").click(function() {
+		            $("#apartment_id").val(""); // Để trống trường
+		            $("#apartment_id").prop("readonly", false); // Mở khóa trường
+					$("#apartment_id_error").hide(); // Ẩn thông báo lỗi
+		        });
+				
+		$("#addResidentForm").submit(function(event) {
+            var apartmentId = $("#apartment_id").val().trim();
+            if (!apartmentId) {
+                event.preventDefault(); // Ngăn gửi form
+                $("#apartment_id_error").show(); // Hiển thị thông báo lỗi
+                return false;
+            }
+            // Nếu email và cccd để trống, gán null để tránh chuỗi rỗng
+            if ($("#email").val().trim() === "") {
+                $("#email").val(null);
+            }
+            if ($("#cccd").val().trim() === "") {
+                $("#cccd").val(null);
+            }
+		});
+    });
+</script>
+
+</body>
+</html>

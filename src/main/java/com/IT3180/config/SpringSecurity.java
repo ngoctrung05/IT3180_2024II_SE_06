@@ -44,8 +44,12 @@ public class SpringSecurity {
                 .successHandler(customSuccessHandler)
                 .permitAll()
             )
-            .logout((logout) -> logout.permitAll())
-            .exceptionHandling(handling -> handling.accessDeniedPage("/access-denied"));
+            .logout(logout -> logout
+                    .logoutUrl("/logout") // endpoint xử lý logout
+                    .logoutSuccessUrl("/login?logout") // chuyển hướng sau khi logout
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                );
         
         return http.build();
     }
