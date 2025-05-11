@@ -9,7 +9,8 @@ import com.IT3180.model.BillType;
 import com.IT3180.repository.ApartmentRepository;
 import com.IT3180.repository.BillItemRepository;
 import com.IT3180.repository.BillTypeRepository;
-import com.IT3180.repository.BillItemRepository;
+import java.time.temporal.ChronoUnit;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +34,14 @@ public class BillService {
         billTypeRepository.deleteById(id);
     }
 
+    // Đánh dấu loại phí từ chưa nộp thành đã nộp
+    public void updateBillItem(Long id) {
+        BillItem billItem = billItemRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("BillItem not found"));
+        billItem.setStatus(true);
+        billItemRepository.save(billItem);
+    }
+    
     public List<BillType> getAllBillTypes() {
         return billTypeRepository.findAll();
     }
@@ -61,6 +70,29 @@ public class BillService {
     // Lọc danh sách khoản phí
     public List<BillItemDTO> getBillItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
         List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        return billItems.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<BillItemDTO> getFeeItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
+        List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        
+        if (billItems != null) {
+            billItems.removeIf(billItem -> 
+                billItem.getBillType() != null && Boolean.TRUE.equals(billItem.getBillType().getContribution())
+            );
+        }
+        
+        return billItems.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<BillItemDTO> getContributionItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
+        List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        
+        if (billItems != null) {
+            billItems.removeIf(billItem -> 
+                billItem.getBillType() != null && Boolean.FALSE.equals(billItem.getBillType().getContribution())
+            );
+        }
         return billItems.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
@@ -95,5 +127,18 @@ public class BillService {
     public Long getAllBillType ()
     {
     	return billTypeRepository.count();
+    }
+    
+    @Scheduled(cron = "0 0 0 * * ?")  // Chạy mỗi ngày lúc 00:00
+    public void deleteBillItemsByStatusAndDueDate() {
+        LocalDate currentDate = LocalDate.now();  // Lấy ngày hiện tại
+        LocalDate dueDateThreshold = currentDate.minusDays(45);  // Tính ngày đã qua 45 ngày
+
+        // Tìm tất cả các BillItem có status = 1 và dueDate đã qua 45 ngày
+        List<BillItem> billItems = billItemRepository.findByStatusAndDueDateBefore(1, dueDateThreshold);
+
+        if (!billItems.isEmpty()) {
+            billItemRepository.deleteAll(billItems);  // Xóa tất cả các BillItem thỏa mãn điều kiện
+        }
     }
 }

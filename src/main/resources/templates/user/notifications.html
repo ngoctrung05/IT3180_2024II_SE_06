@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,15 +14,6 @@
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/css/adminlte.min.css}">
 </head>
-<!--
-`body` tag options:
-
-  Apply one or more of the following classes to to the body tag
-  to get the desired effect
-
-  * sidebar-collapse
-  * sidebar-mini
--->
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
     <!-- Navbar -->
@@ -178,8 +169,7 @@
                     <img th:src="@{/images/profile.png}" class="img-circle elevation-2" alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block"><span th:text="${user}"></span>
-                    </a>
+                    <a href="#" class="d-block"><span th:text="${user}"></span></a>
                 </div>
             </div>
 
@@ -202,208 +192,160 @@
                     <li class="nav-item">
                         <a th:href="@{/user}" class="nav-link">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                Dashboard
-                            </p>
+                            <p>Dashboard</p>
                         </a>
                     </li>
 
                     <!-- Quảm lí khoản phí -->
-                    <li class="nav-item menu-open">
-                        <a th:href="@{/user/billing}" class="nav-link active">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <p>
-                                Khoản phí
-                            </p>
-                            <ul class = "nav nav-treeview">
-                            </ul>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>
+                            Các khoản nộp
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
                         </a>
+                        <ul class="nav nav-treeview" style="display: none;">
+                        <li class="nav-item">
+                            <a th:href="@{/user/billing/fee}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Phí</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/user/billing/contribution}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Đóng góp</p>
+                            </a>
+                        </li>
+                        </ul>
                     </li>
-
 
                     <!-- Thông báo -->
-                    <li class="nav-item">
-                        <a th:href="@{/user/notifications}" class="nav-link">
+                    <li class="nav-item menu-open">
+                        <a th:href="@{/user/notifications}" class="nav-link active">
                             <i class="fas fa-bullhorn"></i>
-                            <p>
-                                Thông báo
-                            </p>
+                            <p>Thông báo</p>
                         </a>
                     </li>
 
-                    <!-- Setiing -->
+                    <!-- Settings -->
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-cogs"></i>
-                            <p>
-                                Cài đặt
-                            </p>
+                            <p>Cài đặt</p>
                         </a>
                     </li>
-
                 </ul>
             </nav>
-            <!-- /.sidebar-menu -->
         </div>
-        <!-- /.sidebar -->
     </aside>
 
-    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1 class="m-0">BlueMoon</h1>
-                    </div><!-- /.col -->
+                    </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
                             <li class="breadcrumb-item active">BlueMoon</li>
                         </ol>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /.content-header -->
-
-        <!-- Main content -->
 
         <section class="content">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="card">
-                        <div class="card-header d-flex justify-content-betwwen ali">
-                            <h3 class="card-title">DANH SÁCH LOẠI ĐÓNG GÓP</h3>
+                        <div class="card-header">
+                            <h3 class="card-title">Thông Báo</h3>
                         </div>
                         <div class="card-body">
-                            <table id="contribution" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Tên khoản đóng góp</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Duyệt qua danh sách -->
-                                <tr th:each="contribution : ${contributionTypes}">
-                                    <td th:text="${contribution.name}">Tên khoản đóng góp</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <style>
+                                .notification-item {
+                                    display: flex;
+                                    align-items: flex-start;
+                                    margin-bottom: 20px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 8px;
+                                    padding: 10px;
+                                    background-color: #e0f0ff;
+                                }
+
+                                .notification-image {
+                                    width: 80px;
+                                    height: 80px;
+                                    margin-right: 15px;
+                                    flex-shrink: 0;
+                                }
+
+                                .notification-image img {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                    border-radius: 8px;
+                                }
+
+                                .notification-content summary {
+                                    font-weight: bold;
+                                    font-size: 1.1rem;
+                                    cursor: pointer;
+                                    outline: none;
+                                }
+
+                                .notification-content summary::-webkit-details-marker {
+                                    display: none;
+                                }
+
+                                .notification-content details[open] summary {
+                                    margin-bottom: 8px;
+                                }
+
+                                .notification-content small {
+                                    color: gray;
+                                    font-size: 0.9em;
+                                }
+                            </style>
+
+                            <div th:each="notification : ${notifications}" class="notification-item">
+                                <div class="notification-image">
+                                    <img th:src="@{'/images/' + ${notification.type} + '.png'}"
+                                         th:alt="${notification.type}" />
+                                </div>
+                                <div class="notification-content">
+                                    <details>
+                                        <summary th:text="${notification.title}">Tiêu đề</summary>
+                                        <p th:text="${notification.content}">Nội dung</p>
+                                        <small th:text="${notification.formatDate}">Ngày tháng</small>
+                                    </details>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-betwwen ali">
-                            <h3 class="card-title">DANH SÁCH LOẠI PHÍ</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="fee" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Tên khoản phí</th>
-                                    <th class="text-center">Giá tiền trên 1 đơn vị</th>
-                                    <th class="text-center">Đơn vị</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Duyệt qua danh sách -->
-                                <tr th:each="fee : ${feeTypes}">
-                                    <td th:text="${fee.name}">Tên khoản phí</td>
-                                    <td th:text="${fee.pricePerUnit}">Giá tiền trên 1 đơn vị</td>
-                                    <td th:text="${fee.unit}">Đơn vị</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header d-flex justify-content-betwwen ali">
-                    <h3 class="card-title">DANH SÁCH KHOẢN THU CHƯA NỘP</h3>
-                </div>
-                <div class="card-body">
-                    <table id="item" class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Tên khoản nộp</th>
-                            <th class="text-center">Tổng tiền</th>
-                            <th class="text-center">Hạn nộp</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Duyệt qua danh sách -->
-                        <tr th:each="item : ${billItems}">
-                            <td th:text="${item.billTypeName}">Tên khoản nộp</td>
-                            <td th:text="${item.totalAmount}">Tổng tiền</td>
-                            <td th:text="${item.dueDate}">Hạn nộp</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header d-flex justify-content-betwwen ali">
-                    <h3 class="card-title">DANH SÁCH KHOẢN THU ĐÃ NỘP</h3>
-                </div>
-                <div class="card-body">
-                    <table id="item" class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Tên khoản nộp</th>
-                            <th class="text-center">Tổng tiền</th>
-                            <th class="text-center">Hạn nộp</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Duyệt qua danh sách -->
-                        <tr th:each="item : ${billItemsDone}">
-                            <td th:text="${item.billTypeName}">Tên khoản nộp</td>
-                            <td th:text="${item.totalAmount}">Tổng tiền</td>
-                            <td th:text="${item.dueDate}">Hạn nộp</td>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </section>
-
-        <!-- /.content-wrapper -->
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
-
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 1.0
-            </div>
-        </footer>
     </div>
-    <!-- ./wrapper -->
 
-    <!-- REQUIRED SCRIPTS -->
-
-    <!-- jQuery -->
-    <script th:src="@{/js/jquery.min.js}"></script>
-    <!-- Bootstrap -->
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-    <!-- AdminLTE -->
-    <script th:src="@{/js/adminlte.js}"></script>
-
-    <!-- OPTIONAL SCRIPTS -->
-    <script th:src="@{js/Chart.min.js}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script th:src="@{/js/demo.js}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="@{/js/pages/dashboard3.js}"></script>
+    <footer class="main-footer">
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 1.0
+        </div>
+    </footer>
 </div>
-</body>
 
+<!-- REQUIRED SCRIPTS -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/adminlte.js}"></script>
+<script th:src="@{js/Chart.min.js}"></script>
+<script th:src="@{/js/demo.js}"></script>
+<script src="@{/js/pages/dashboard3.js}"></script>
+</body>
 </html>

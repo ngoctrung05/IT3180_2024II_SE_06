@@ -12,5 +12,6 @@ public interface BillTypeRepository extends JpaRepository<BillType, Long> {
     boolean existsByName(String name);
     Optional<BillType> findByName(String name);
     List<BillType> findByIsContribution(Boolean isContribution);
+    Optional<BillType> findById(Long id);
 }
 

@@ -16,6 +16,9 @@ public class User {
 
 	@Column(nullable = false)
 	private String password;
+	
+	@Column(nullable = false, unique = true)
+	private String email;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
@@ -30,9 +33,10 @@ public class User {
 	private Apartment apartment;
 
 
-	public User( String name, String password, List<Role> roles, Apartment apartment) {
+	public User( String name, String email, String password, List<Role> roles, Apartment apartment) {
 		super();
 		this.name = name;
+		this.email = email;
 		this.password = password;
 		this.roles = roles;
 		this.apartment = apartment;
@@ -84,9 +88,18 @@ public class User {
 		apartment.setUser(this);
 	}
 
-	public User(String name, String password, List<Role> roles) {
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public User(String name, String email, String password, List<Role> roles) {
 		super();
 		this.name = name;
+		this.email = email;
 		this.password = password;
 		this.roles = roles;
 	}

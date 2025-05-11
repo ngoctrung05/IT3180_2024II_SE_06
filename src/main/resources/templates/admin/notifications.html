@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "http://www.thymleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -74,7 +74,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img th:src="@{images/avatar.jpg}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel
@@ -178,8 +178,7 @@
           <img th:src="@{/images/profile.png}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block"><span th:text="${user}"></span>
-</a>
+          <a href="#" class="d-block"><span th:text="${user}"></span></a>
         </div>
       </div>
 
@@ -200,7 +199,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
        <!-- Trang chủ --> 
           <li class="nav-item">
-            <a th:href="@{/admin/dashboard}" class="nav-link">
+            <a th:href="@{/admin}" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -210,19 +209,19 @@
           
           <!-- Quảm lí dân -->
           <li class="nav-item">
-            <a  th:href="@{/admin/resident}" class="nav-link">
+            <a th:href="@{/admin/resident}" class="nav-link">
               <i class="fas fa-users"></i>
               <p>
                 Quản lí cư dân
               </p>
             </a>
-             <!-- <ul class = "nav nav-treeview">
-          </ul> -->
+             <ul class = "nav nav-treeview">
+          </ul>
           </li>
           
           <!-- Quản lí tài khoản -->
-          <li class="nav-item menu-open">
-                <a th:href="@{/admin/account}" class="nav-link active">
+          <li class="nav-item">
+                <a th:href="@{/admin/account}" class="nav-link">
                   <i class="fas fa-user-shield"></i>
                   <p>Quản lí tài khoản</p>
                 </a>
@@ -255,8 +254,8 @@
           
           
           <!-- Thông báo -->
-          <li class="nav-item">
-            <a th:href="@{/admin/notifications}" class="nav-link">
+          <li class="nav-item menu-open">
+            <a th:href="@{/admin/notifications}" class="nav-link active">
               <i class="fas fa-bullhorn"></i>
               <p>
                 Thông báo
@@ -273,7 +272,8 @@
               </p>
             </a>
           </li>
-           
+          
+          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -292,7 +292,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Home</a></li>
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active">Admin BlueMoon</li>
             </ol>
           </div><!-- /.col -->
@@ -300,91 +300,99 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
+	
+	  <!-- Main content -->
+	  <div class="content">
+	    <div class="container-fluid">
+	      <div class="row">
+	        <div class="col-12">
+	          <div class="card">
+	            <div class="card-header">
+	              <h3 class="card-title">Danh sách thông báo</h3>
+	              <div class="card-tools">
+	                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+	                  <i class="fas fa-minus"></i>
+	                </button>
+	              </div>
+	            </div>
+	            <div class="card-body">
+	              <!-- Thêm thông báo mới -->
+	              <div class="mb-3">
+	                <button class="btn btn-primary" data-toggle="modal" data-target="#createNotificationModal">Thêm Thông Báo</button>
+	              </div>
+	              
+	              <!-- Bảng thông báo -->
+	              <table class="table table-bordered table-hover">
+	                <thead>
+	                  <tr>
+						<th style="width: 15%;">Tiêu đề</th>
+                          <th style="width: 45%;">Nội dung</th>
+						<th style="width: 10%;">Loại</th>
+						<th style="width: 20%;">Ngày tạo</th>
+						<th style="width: 10%;">Hành động</th>
+	                  </tr>
+	                </thead>
+	                <tbody>
+	                  <tr th:each="notification : ${notifications}">
+	                    <td th:text="${notification.getTitle()}"></td>
+                          <td th:text="${notification.getContent()}"></td>
+	                    <td th:text="${notification.getType()}"></td>
+	                    <td th:text="${notification.getCreatedAt()}"></td>
+	                    <td>
+						  <a th:href="@{'/admin/notifications/delete/' + ${notification.id}}" 
+						     class="btn btn-sm btn-danger"
+						     onclick="return confirm('Bạn có chắc chắn muốn xoá thông báo này?');">Xoá</a>
+	                    </td>
+	                  </tr>
+	                </tbody>
+	              </table>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
 
-    <!-- Main content -->
+	      <!-- Modal tạo thông báo -->
+	      <div class="modal fade" id="createNotificationModal" tabindex="-1" role="dialog" aria-labelledby="createNotificationLabel" aria-hidden="true">
+	        <div class="modal-dialog" role="document">
+	          <div class="modal-content">
+				<form id="notificationForm" method="POST" action="/admin/notifications/save">
+				  <div class="modal-body">
+				    <div class="mb-3">
+				      <label for="title" class="form-label">Tiêu đề</label>
+				      <input type="text" class="form-control" id="title" name="title" required />
+				    </div>
+				    <div class="mb-3">
+				      <label for="content" class="form-label">Nội dung</label>
+				      <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+				    </div>
+				    <div class="mb-3">
+				      <label for="type" class="form-label">Loại thông báo</label>
+				      <select class="form-select" id="type" name="type" required>
+				        <option value="all">Thông báo chung</option>
+				        <option value="overdue">Nhắc phí</option>
+				        <option value="emergency">Khẩn cấp</option>
+				      </select>
+				    </div>
+				    <div class="form-check">
+				      <input class="form-check-input" type="checkbox" id="sendEmailCheckbox" name="sendEmail">
+				      <label class="form-check-label" for="sendEmailCheckbox">
+				        Gửi email đến cư dân
+				      </label>
+				    </div>
+				  </div>
+				  <div class="modal-footer">
+				    <button type="submit" class="btn btn-primary">Tạo thông báo</button>
+				    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+				  </div>
+				</form>
+	          </div>
+	        </div>
+	      </div>
 
- <section class="content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
- 			 <h3 class="card-title mb-0">QUẢN LÍ TÀI KHOẢN</h3>
- 		
- 			  <div class="ml-auto">
-  				<button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-default">
-                  <i class="fas fa-user-plus mr-1"></i> Tạo tài khoản
-                </button>
-                </div>
-			</div>
-
-
-          <!-- /.card-header -->
-
-          <div class="card-body">
-            <table id="example2" class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th class="text-center">Tên đăng nhập</th>
-                  <th class="text-center">Mật khẩu</th>
-                  <th class="text-center">Căn hộ</th>
-                  <th class="text-center">Chức vụ   <div class="dropdown d-inline">
-    <!-- Nút biểu tượng filter dùng làm toggle mở menu -->
-    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fa fa-filter" aria-hidden="true"></i>
-    </a>
-    <!-- Menu dropdown các vai trò -->
-    <div class="dropdown-menu dropdown-menu-right">
-      <a class="dropdown-item" th:href="@{/admin/account(role='Ban Quản Trị')}">Ban Quản Trị</a>
-      <a class="dropdown-item" th:href="@{/admin/account(role='Cư Dân')}">Cư Dân</a>
-      <a class="dropdown-item" th:href="@{/admin/account(role='Khách')}">Khách</a>
-    </div>
-  </div></th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Duyệt qua danh sách người dùng -->
-                <tr th:each="user : ${users}">
-                  <td th:text="${user.name}">Tên đăng nhập</td>
-                  <td th:text="${user.password}">Mật khẩu</td> 
-                  <td th:text="${user.apartment != null ? user.apartment.id : 'Chưa có căn hộ'}">Căn hộ</td>
-
-                  <td>
-                    <!-- Duyệt qua các vai trò của người dùng -->
-                    <span th:each="role : ${user.roles}" th:text="${role.name}">Vai trò</span>
-                  </td>
-                  <td>
-	                  <form th:action="@{/admin/account/delete/{id}(id=${user.id})}" method="post">
-	                  <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
-	                  </form>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- /.card-body -->
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-    
-    
-    
-  <!-- /.content-wrapper -->
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-
-  <!-- Main Footer -->
-  <footer class="main-footer">
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 1.0
-    </div>
-  </footer>
+	    </div>
+	  </div>
+	</div>
+	
 </div>
 <!-- ./wrapper -->
 
@@ -398,75 +406,10 @@
 <script th:src="@{/js/adminlte.js}"></script>
 
 <!-- OPTIONAL SCRIPTS -->
-<script th:src="@{js/Chart.min.js}"></script>
+<script src="plugins/chart.js/Chart.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script th:src="@{/js/demo.js}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="@{/js/pages/dashboard3.js}"></script>
-
-<div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="createAccountLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="createAccountLabel">Tạo tài khoản mới</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Đóng">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      <form th:action="@{/admin/account/save}" method="post">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="name">Tên đăng nhập</label>
-            <input type="text" class="form-control" name="name" id="name" required placeholder="Nhập tên đăng nhập">
-          </div>
-
-		  <div class="form-group">
-		    <label for="name">Email</label>
-		    <input type="text" class="form-control" name="email" id="email" required placeholder="Nhập email">
-		  </div>		  
-		  
-          <div class="form-group">
-            <label for="password">Mật khẩu</label>
-            <input type="password" class="form-control" name="password" id="password" required placeholder="Nhập mật khẩu">
-          </div>
-
-          <div class="form-group">
-            <label for="roles">Chức vụ</label>
-           <select name="roles" id="role" class="form-control" required>
-              <option value="" disabled selected>-- Chọn chức vụ --</option>
-              <option value="1">Ban Quản Trị</option>
-              <option value="2">Cư Dân</option>
-              <option value="3">Khách</option>
-            </select>
-          </div>
-          
-         <div class="form-group">
-    		<label for ="apartment">Căn Hộ</label>
-    		<select name="apartment" id="apartment" class="form-control" required>
-        <!-- Tùy chọn Không có căn hộ (giá trị null) -->
-        	<option value="" disabled selected>-- Chọn căn hộ --</option>
-        	<option value="" >Không có căn hộ</option>
-        
-        <!-- Các căn hộ được lặp qua từ danh sách -->
-        	<th:block th:each="apartment : ${apartments}">
-            <option th:value="${apartment.id}" th:text = "${apartment.id}" > </option>
-       		</th:block>
-    		</select>
-		</div>
-		
-		
-		
-		
-</div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-          <button type="submit" class="btn btn-primary">Tạo</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 </body>
 </html>

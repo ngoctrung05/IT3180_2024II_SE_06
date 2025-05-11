@@ -2,7 +2,6 @@ package com.IT3180.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
 
 import com.IT3180.model.Apartment;
 import com.IT3180.model.Role;
@@ -15,6 +14,9 @@ public class UserDTO {
 
 	 @NotEmpty(message = "Nhập tên hợp lệ")
 	 private String name;
+	 
+	 @NotEmpty(message = "Nhập email hợp lệ")
+	 private String email;
 	 
 	 private List<Role> roles = new ArrayList<>();   
 	 
@@ -38,6 +40,14 @@ public class UserDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public List<Role> getRoles() {
@@ -64,11 +74,12 @@ public class UserDTO {
 		this.password = password;
 	}
 
-	public UserDTO(Long id, @NotEmpty(message = "Nhập tên hợp lệ") String name, List<Role> roles,
+	public UserDTO(Long id, @NotEmpty(message = "Nhập tên hợp lệ") String name, @NotEmpty(message = "Nhập email hợp lệ") String email, List<Role> roles,
 			@NotEmpty Apartment apartment, @NotEmpty String password) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.email = email;
 		this.roles = roles;
 		this.apartment = apartment;
 		this.password = password;

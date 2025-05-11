@@ -11,9 +11,7 @@ import com.IT3180.repository.UserRepository;
 import com.IT3180.util.TbConstants;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
@@ -35,17 +33,18 @@ public class DatabaseInitializer implements CommandLineRunner {
     {
         if (userRepository.findByName("Admin_1") == null) 
         {
-            Role adminRole = roleRepository.findByName(TbConstants.Role.USER);
+            Role adminRole = roleRepository.findByName(TbConstants.Role.ADMIN);
                     if (adminRole == null)
                     {
                         adminRole = new Role();
-                        adminRole.setName(TbConstants.Role.USER);
+                        adminRole.setName(TbConstants.Role.ADMIN);
                         adminRole = roleRepository.save(adminRole);
                     };
 
             // Tạo user admin mới
             User admin = new User();
             admin.setName("Admin_1");
+            admin.setEmail("admin1@example.com");
             admin.setPassword(passwordEncoder.encode("admin1")); 
             List<Role> roles = new ArrayList();
             roles.add(adminRole);

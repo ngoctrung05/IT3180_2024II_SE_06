@@ -33,7 +33,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a th:href="@{/admin/admin_dashboard.html}" class="nav-link">Home</a>
+        <a th:href="@{/admin/admin_dashboard}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -230,18 +230,33 @@
          
           <!-- Quảm lí khoản phí -->
           <li class="nav-item">
-            <a th:href="@{/admin/billing}" class="nav-link">
+            <a href="" class="nav-link">
               <i class="fas fa-file-invoice-dollar"></i>
               <p>
-                Quản lí khoản phí
+                Quản lý khoản nộp
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a th:href="@{/admin/billing/fee}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Phí</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/billing/contribution}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Đóng góp</p>
+                </a>
+              </li>
+            </ul>
           </li>
           
           
           <!-- Thông báo -->
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a th:href="@{/admin/notifications}" class="nav-link">
               <i class="fas fa-bullhorn"></i>
               <p>
                 Thông báo
@@ -382,25 +397,26 @@
               <thead>
                 <tr>
 				  <th class="text-center">ID</th>
-                  <th class="text-center">ID chủ căn hộ</th>
-                  <th class="text-center">Số điện thoại</th>
 				  <th class="text-center">Diện tích (m2)</th>
+				  <th class="text-center">Danh Sách Cư Dân</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Duyệt qua danh sách người dùng -->
                 <tr th:each="apartment : ${apartments}">
 				  <td class="text-center" th:text="${apartment.id}">ID</td>
-                  <td class="text-center" th:text="${apartment.idHouseholder}">ID chủ căn hộ</td>
-				  <td class="text-center" th:text="${apartment.phone}">Số điện thoại</td>
 				  <td class="text-center" th:text="${apartment.area}">Diện tích (m2)</td> 
+				   <td class="text-center" style="width: 150px;">
+				   	<div class="d-flex align-items-center justify-content-center gap-2">
+				   	<button style="border: none; background: none; padding: 5px; cursor: pointer;" class="residentButton" th:data-id="${apartment.id}">
+							<i class="fas fa-user-friends"></i>
+						</button>
+				   	</div>
+				   
+				   </td >
 				  
 				  <td class="text-center" style="width: 150px;">
 				  	<div class="d-flex align-items-center justify-content-center gap-2">
-						
-						<button style="border: none; background: none; padding: 5px; cursor: pointer;" class="residentButton" th:data-id="${apartment.id}">
-							<i class="fas fa-user-friends"></i>
-						</button>
 
 						<button type="button" class="add-resident-btn" th:data-apartment-id="${apartment.id}" style="border: none; background: none; padding: 5px; cursor: pointer;" data-toggle="modal" data-target="#modalAddResident">
 							<i class="fas fa-user-plus" style="color: #80cffa;"></i>

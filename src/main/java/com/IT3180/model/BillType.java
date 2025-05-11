@@ -1,15 +1,10 @@
 package com.IT3180.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.util.*;
 
 @Entity
 @Table(name = "bill_type")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BillType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,4 +73,27 @@ public class BillType {
 		this.billItems = billItems;
 	}
 
+	public BillType(Long id, String name, String unit, Boolean isContribution, Long pricePerUnit,
+			List<BillItem> billItems) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.unit = unit;
+		this.isContribution = isContribution;
+		this.pricePerUnit = pricePerUnit;
+		this.billItems = billItems;
+	}
+
+	public BillType() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Boolean getContribution() {
+		return isContribution;
+	}
+
+	public void setContribution(Boolean contribution) {
+		isContribution = contribution;
+	}
 }

@@ -11,7 +11,9 @@ import com.IT3180.dto.UserDTO;
 import com.IT3180.repository.ApartmentRepository;
 import com.IT3180.repository.RoleRepository;
 import com.IT3180.repository.UserRepository;
+import com.IT3180.repository.BillItemRepository;
 import com.IT3180.util.TbConstants;
+import java.time.LocalDate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,8 @@ public class UserService {
 	@Autowired 
 	private ApartmentRepository apartmentRepository;
 	
+	@Autowired
+	private BillItemRepository billItemRepository;
 	
     public void saveUser(UserDTO userDto) 
 	{
@@ -42,7 +46,7 @@ public class UserService {
     	        apartment = apartmentRepository.findById(userDto.getApartment().getId())
     	                .orElse(null);  // Nếu không tìm thấy, trả về null
     	    }
-        User user = new User(userDto.getName(), passwordEncoder.encode(userDto.getPassword()), userDto.getRoles(),apartment);
+        User user = new User(userDto.getName(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getRoles(),apartment);
         userRepository.save(user);
     }
 
@@ -77,4 +81,13 @@ public class UserService {
 	 {
 		 return userRepository.count();
 	 }
+	 
+	 public List<LocalDate> getDueDateById(Long id){
+		 return billItemRepository.findDueDatesByUserId(id);
+	 }
+	 
+	 public List<User> findByRole(String roleName) {
+		    return userRepository.findUsersByRoles_Name(roleName);
+		}
+
 }

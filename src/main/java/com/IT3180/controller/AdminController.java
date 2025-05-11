@@ -1,8 +1,6 @@
 package com.IT3180.controller;
 
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,23 +12,30 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import jakarta.mail.MessagingException;
+import com.IT3180.services.EmailService;
+import com.IT3180.dto.EmailRequest;
+import com.IT3180.model.Resident;
+import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.time.LocalDateTime;
+import org.springframework.scheduling.annotation.Scheduled;
+
+import java.io.*;
 
 import com.IT3180.dto.BillItemDTO;
 import com.IT3180.dto.UserDTO;
 import com.IT3180.model.Apartment;
 import com.IT3180.model.BillType;
-import com.IT3180.model.Resident;
 import com.IT3180.services.UserService;
 import com.IT3180.services.ApartmentService;
 import com.IT3180.services.BillService;
 import com.IT3180.services.ResidentService;
+import com.IT3180.services.NotificationsServices;
+import com.IT3180.model.Notifications;
 
 @Controller
 @RequestMapping ("/admin")
@@ -44,6 +49,12 @@ public class AdminController {
 	private ResidentService residentService;
 	@Autowired
 	private BillService billService;
+	@Autowired
+    private EmailService emailService;
+	@Autowired
+	private NotificationsServices notificationsServices;
+	
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	 @GetMapping("/dashboard")
 	    public String dashboard(Model model) 
 	 	{
@@ -59,12 +70,17 @@ public class AdminController {
 	    }
 	 
 	@GetMapping("/account")
-	public String account (Model model)
+	public String account (Model model,@RequestParam(name = "role", required = false) String role)
 	{
+		 List<com.IT3180.model.User> users;
+		    if (role != null && !role.isEmpty()) {
+		        users = userService.findByRole(role);  // bạn cần hàm này
+		    } else {
+		        users = userService.getAllUsers();
+		    }
+		    model.addAttribute("users", users);
 		List<Apartment> apartments = apartmentService.getAllApartments();
 		model.addAttribute("apartments", apartments);
-		List<com.IT3180.model.User> users = userService.getAllUsers();
-    	model.addAttribute("users", users);
 		return "admin/account";
 	}
 	
@@ -85,6 +101,14 @@ public class AdminController {
         
 		return "admin/resident";
 	}
+	
+	@GetMapping ("/notifications")
+	public String showSendEmailForm(Model model) {
+        List<Notifications> notifications = notificationsServices.findAll();
+        model.addAttribute("notifications", notifications);
+        model.addAttribute("emailRequest", new EmailRequest());
+        return "admin/notifications"; // Trả về trang Thymeleaf
+    }
 	
 	 @PostMapping("/account/delete/{id}")
 	 public String deleteAccount(@PathVariable Long id) 
@@ -160,7 +184,45 @@ public class AdminController {
 	        residentService.deleteResident(residentId); // Giả sử ResidentService có phương thức này
 	        return "success"; // Trả về chuỗi để báo thành công
 	    }
-	    
+
+		@GetMapping("/billing/fee")
+		public String fee (
+			@RequestParam(required = false) String billTypeName,
+			@RequestParam(required = false) Long apartmentId,
+			@RequestParam(required = false) Boolean status,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			Model model)
+		{
+			List<BillType> feeTypes = billService.getAllFeeTypes();
+			model.addAttribute("feeTypes", feeTypes);
+			List<BillItemDTO> feeItems = billService.getFeeItems(billTypeName, apartmentId, false, fromDate, toDate);
+			model.addAttribute("feeItems", feeItems);
+			List<BillItemDTO> feeItemsDone = billService.getFeeItems(billTypeName, apartmentId, true, fromDate, toDate);
+			model.addAttribute("feeItemsDone", feeItemsDone);
+			List<Apartment> apartments = apartmentService.getAllApartments();
+			model.addAttribute("apartments", apartments);
+			return "admin/fee";
+		}
+
+		@GetMapping("/billing/contribution")
+		public String contribution (
+			@RequestParam(required = false) String billTypeName,
+			@RequestParam(required = false) Long apartmentId,
+			@RequestParam(required = false) Boolean status,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			Model model)
+		{
+			List<BillType> contributionTypes = billService.getAllContributionType();
+			model.addAttribute("contributionTypes", contributionTypes);
+			List<BillItemDTO> contributionItems = billService.getContributionItems(billTypeName, apartmentId, status, fromDate, toDate);
+			model.addAttribute("contributionItems", contributionItems);
+			List<Apartment> apartments = apartmentService.getAllApartments();
+			model.addAttribute("apartments", apartments);
+			return "admin/contribution";
+		}
+		
 		@GetMapping("/billing")
 		public String billing (
 				@RequestParam(required = false) String billTypeName,
@@ -187,34 +249,68 @@ public class AdminController {
 		public String addFeeType(@ModelAttribute BillType billType) {
 			billType.setIsContribution(false);
 			billService.addBillType(billType);
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/fee";
 		}
 
 		@PostMapping("/billing/addContributionType")
 		public String addContributionType(@ModelAttribute BillType billType) {
 			billType.setIsContribution(true);
 			billService.addBillType(billType);
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/contribution";
 		}
 
-		@PostMapping("/billing/type/delete/{id}")
+		@PostMapping("/billing/fee/type/delete/{id}")
 		public String deleteBillType(@PathVariable Long id)
 		{
 			billService.deleteBillType(id);
-			return "redirect:/admin/billing";
+			
+			return "redirect:/admin/billing/fee";
 		}
 
-		@PostMapping("/billing/addBillItem")
+		@PostMapping("/billing/fee/item/update/{id}")
+		public String updateBillItem(@PathVariable Long id)
+		{
+			billService.updateBillItem(id);
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/type/delete/{id}")
+		public String deleteContributionType(@PathVariable Long id)
+		{
+			billService.deleteBillType(id);
+			return "redirect:/admin/billing/contribution";
+		}
+
+		@PostMapping("/billing/fee/addBillItem")
 		public String addBillItem(@ModelAttribute BillItemDTO billItemDTO) {
 			if (billItemDTO.getStatus() == null) {
 				billItemDTO.setStatus(false);
 			}
 			billService.addBillItem(billItemDTO);
-			System.out.println(billItemDTO.getApartmentId());
-			System.out.println(billItemDTO.getBillTypeName());
-			System.out.println(billItemDTO.getStatus());
-			System.out.println(billItemDTO.getDueDate());
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/addBillItem")
+		public String addContributionItem(@ModelAttribute BillItemDTO billItemDTO) {
+			if (billItemDTO.getStatus() == null) {
+				billItemDTO.setStatus(false);
+			}
+			billService.addBillItem(billItemDTO);
+			return "redirect:/admin/billing/contribution";
+		}
+
+		@PostMapping("/billing/fee/item/delete/{id}")
+		public String deleteFeeItem(@PathVariable Long id)
+		{
+			billService.deleteBillItem(id);
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/item/delete/{id}")
+		public String deleteContributionItem(@PathVariable Long id)
+		{
+			billService.deleteBillItem(id);
+			return "redirect:/admin/billing/contribution";
 		}
 
 		@PostMapping("/billing/item/delete/{id}")
@@ -223,6 +319,51 @@ public class AdminController {
 			billService.deleteBillItem(id);
 			return "redirect:/admin/billing";
 		}
+		
+		@PostMapping("/notifications/save")
+		public String saveNotification(@RequestParam String title,
+		                               @RequestParam String content,
+		                               @RequestParam String type,
+		                               @RequestParam(required = false) String sendEmail) {
+		    // Lưu thông báo vào DB (giả sử bạn có NotificationService rồi)
+		    Notifications notifications = new Notifications();
+		    notifications.setTitle(title);
+		    notifications.setContent(content);
+		    notifications.setType(type);
+		    notifications.setCreatedAt(LocalDateTime.now());
+		    notificationsServices.save(notifications);
 
-   
+		    // Nếu có checkbox gửi email
+		    if (sendEmail != null) {
+		        try {
+		            emailService.sendEmail(type, title, content);
+		        } catch (MessagingException e) {
+		            e.printStackTrace();
+		        }
+		    }
+
+		    return "redirect:/admin/notifications"; // Quay lại trang danh sách thông báo
+		}
+
+	    // Xoá thông báo
+	    @GetMapping("/notifications/delete/{id}")
+	    public String deleteNotification(@PathVariable Long id) {
+	        notificationsServices.delete(id);
+	        return "redirect:/admin/notifications";
+	    }
+	    
+	    @Scheduled(fixedRate = 86400000) // Xoá mỗi ngày
+	    public void deleteExpiredNotifications() {
+	        notificationsServices.deleteExpiredNotifications();
+	    }
+
+	    /**
+	     * Xử lý ngoại lệ chung cho controller
+	     */
+	    @ExceptionHandler(Exception.class)
+	    public ResponseEntity<String> handleException(Exception e) {
+	        logger.error("Lỗi chung: {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("Error: " + e.getMessage());
+	    }
 }
