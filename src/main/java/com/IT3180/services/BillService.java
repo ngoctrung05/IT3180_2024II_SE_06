@@ -34,6 +34,14 @@ public class BillService {
         billTypeRepository.deleteById(id);
     }
 
+    // Đánh dấu loại phí từ chưa nộp thành đã nộp
+    public void updateBillItem(Long id) {
+        BillItem billItem = billItemRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("BillItem not found"));
+        billItem.setStatus(true);
+        billItemRepository.save(billItem);
+    }
+    
     public List<BillType> getAllBillTypes() {
         return billTypeRepository.findAll();
     }
@@ -62,6 +70,29 @@ public class BillService {
     // Lọc danh sách khoản phí
     public List<BillItemDTO> getBillItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
         List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        return billItems.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<BillItemDTO> getFeeItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
+        List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        
+        if (billItems != null) {
+            billItems.removeIf(billItem -> 
+                billItem.getBillType() != null && Boolean.TRUE.equals(billItem.getBillType().getContribution())
+            );
+        }
+        
+        return billItems.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<BillItemDTO> getContributionItems(String BillTypeName, Long apartmentId, Boolean status, LocalDate fromDate, LocalDate toDate) {
+        List<BillItem> billItems = billItemRepository.findByFilters(BillTypeName, apartmentId, status, fromDate, toDate);
+        
+        if (billItems != null) {
+            billItems.removeIf(billItem -> 
+                billItem.getBillType() != null && Boolean.FALSE.equals(billItem.getBillType().getContribution())
+            );
+        }
         return billItems.stream().map(this::toDTO).collect(Collectors.toList());
     }
 

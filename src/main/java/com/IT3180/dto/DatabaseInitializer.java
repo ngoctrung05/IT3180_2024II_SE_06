@@ -11,9 +11,7 @@ import com.IT3180.repository.UserRepository;
 import com.IT3180.util.TbConstants;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DatabaseInitializer implements CommandLineRunner {

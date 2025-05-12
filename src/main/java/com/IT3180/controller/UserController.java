@@ -1,8 +1,6 @@
 package com.IT3180.controller;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import com.IT3180.dto.BillItemDTO;
 import com.IT3180.model.User;
@@ -21,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.IT3180.services.NotificationsServices;
 import com.IT3180.model.Notifications;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.IT3180.services.NotificationsServices;
+import com.IT3180.model.Notifications;
 import java.time.format.DateTimeFormatter;
 
 @Controller
@@ -65,6 +67,41 @@ public class UserController {
         model.addAttribute("billItemsDone", billItemsDone);
         return "user/billing";
     }
+
+    @GetMapping("/billing/fee")
+    public String fee (
+        @AuthenticationPrincipal UserDetails userDetails,
+        Model model)
+    {
+        List<BillType> feeTypes = billService.getAllFeeTypes();
+        model.addAttribute("feeTypes", feeTypes);
+
+        String name = userDetails.getUsername();
+        User user = userService.findUserByName(name);
+
+        List<BillItemDTO> feeItems = billService.getFeeItems(null, user.getApartment().getId(), false, null, null);
+        model.addAttribute("feeItems", feeItems);
+
+        List<BillItemDTO> feeItemsDone = billService.getFeeItems(null, user.getApartment().getId(), true, null, null);
+        model.addAttribute("feeItemsDone", feeItemsDone);
+        return "user/fee";
+    }
+
+	@GetMapping("/billing/contribution")
+	public String contribution (
+        @AuthenticationPrincipal UserDetails userDetails,
+		Model model)
+	{
+		List<BillType> contributionTypes = billService.getAllContributionType();
+		model.addAttribute("contributionTypes", contributionTypes);
+
+        String name = userDetails.getUsername();
+        User user = userService.findUserByName(name);
+
+		List<BillItemDTO> contributionItems = billService.getContributionItems(null, user.getApartment().getId(), null, null, null);
+		model.addAttribute("contributionItems", contributionItems);
+		return "user/contribution";
+	}
     
     @GetMapping("/notifications")
     public String notifications(Model model) {

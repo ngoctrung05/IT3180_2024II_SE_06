@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.mail.MessagingException;
+import com.IT3180.services.EmailService;
 import com.IT3180.dto.EmailRequest;
 import com.IT3180.model.Resident;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,12 @@ import com.IT3180.dto.BillItemDTO;
 import com.IT3180.dto.UserDTO;
 import com.IT3180.model.Apartment;
 import com.IT3180.model.BillType;
-import com.IT3180.model.Notifications;
 import com.IT3180.services.UserService;
+import com.IT3180.services.ApartmentService;
+import com.IT3180.services.BillService;
+import com.IT3180.services.ResidentService;
+import com.IT3180.services.NotificationsServices;
+import com.IT3180.model.Notifications;
 import com.IT3180.model.Complaint;
 
 @Controller
@@ -50,6 +55,7 @@ public class AdminController {
     private EmailService emailService;
 	@Autowired
 	private NotificationsServices notificationsServices;
+  
 	@Autowired
 	private ComplaintService complaintService;
 	
@@ -190,7 +196,45 @@ public class AdminController {
 	        residentService.deleteResident(residentId); // Giả sử ResidentService có phương thức này
 	        return "success"; // Trả về chuỗi để báo thành công
 	    }
-	    
+
+		@GetMapping("/billing/fee")
+		public String fee (
+			@RequestParam(required = false) String billTypeName,
+			@RequestParam(required = false) Long apartmentId,
+			@RequestParam(required = false) Boolean status,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			Model model)
+		{
+			List<BillType> feeTypes = billService.getAllFeeTypes();
+			model.addAttribute("feeTypes", feeTypes);
+			List<BillItemDTO> feeItems = billService.getFeeItems(billTypeName, apartmentId, false, fromDate, toDate);
+			model.addAttribute("feeItems", feeItems);
+			List<BillItemDTO> feeItemsDone = billService.getFeeItems(billTypeName, apartmentId, true, fromDate, toDate);
+			model.addAttribute("feeItemsDone", feeItemsDone);
+			List<Apartment> apartments = apartmentService.getAllApartments();
+			model.addAttribute("apartments", apartments);
+			return "admin/fee";
+		}
+
+		@GetMapping("/billing/contribution")
+		public String contribution (
+			@RequestParam(required = false) String billTypeName,
+			@RequestParam(required = false) Long apartmentId,
+			@RequestParam(required = false) Boolean status,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			Model model)
+		{
+			List<BillType> contributionTypes = billService.getAllContributionType();
+			model.addAttribute("contributionTypes", contributionTypes);
+			List<BillItemDTO> contributionItems = billService.getContributionItems(billTypeName, apartmentId, status, fromDate, toDate);
+			model.addAttribute("contributionItems", contributionItems);
+			List<Apartment> apartments = apartmentService.getAllApartments();
+			model.addAttribute("apartments", apartments);
+			return "admin/contribution";
+		}
+		
 		@GetMapping("/billing")
 		public String billing (
 				@RequestParam(required = false) String billTypeName,
@@ -217,34 +261,68 @@ public class AdminController {
 		public String addFeeType(@ModelAttribute BillType billType) {
 			billType.setIsContribution(false);
 			billService.addBillType(billType);
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/fee";
 		}
 
 		@PostMapping("/billing/addContributionType")
 		public String addContributionType(@ModelAttribute BillType billType) {
 			billType.setIsContribution(true);
 			billService.addBillType(billType);
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/contribution";
 		}
 
-		@PostMapping("/billing/type/delete/{id}")
+		@PostMapping("/billing/fee/type/delete/{id}")
 		public String deleteBillType(@PathVariable Long id)
 		{
 			billService.deleteBillType(id);
-			return "redirect:/admin/billing";
+			
+			return "redirect:/admin/billing/fee";
 		}
 
-		@PostMapping("/billing/addBillItem")
+		@PostMapping("/billing/fee/item/update/{id}")
+		public String updateBillItem(@PathVariable Long id)
+		{
+			billService.updateBillItem(id);
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/type/delete/{id}")
+		public String deleteContributionType(@PathVariable Long id)
+		{
+			billService.deleteBillType(id);
+			return "redirect:/admin/billing/contribution";
+		}
+
+		@PostMapping("/billing/fee/addBillItem")
 		public String addBillItem(@ModelAttribute BillItemDTO billItemDTO) {
 			if (billItemDTO.getStatus() == null) {
 				billItemDTO.setStatus(false);
 			}
 			billService.addBillItem(billItemDTO);
-			System.out.println(billItemDTO.getApartmentId());
-			System.out.println(billItemDTO.getBillTypeName());
-			System.out.println(billItemDTO.getStatus());
-			System.out.println(billItemDTO.getDueDate());
-			return "redirect:/admin/billing";
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/addBillItem")
+		public String addContributionItem(@ModelAttribute BillItemDTO billItemDTO) {
+			if (billItemDTO.getStatus() == null) {
+				billItemDTO.setStatus(false);
+			}
+			billService.addBillItem(billItemDTO);
+			return "redirect:/admin/billing/contribution";
+		}
+
+		@PostMapping("/billing/fee/item/delete/{id}")
+		public String deleteFeeItem(@PathVariable Long id)
+		{
+			billService.deleteBillItem(id);
+			return "redirect:/admin/billing/fee";
+		}
+
+		@PostMapping("/billing/contribution/item/delete/{id}")
+		public String deleteContributionItem(@PathVariable Long id)
+		{
+			billService.deleteBillItem(id);
+			return "redirect:/admin/billing/contribution";
 		}
 
 		@PostMapping("/billing/item/delete/{id}")
@@ -278,7 +356,6 @@ public class AdminController {
 
 		    return "redirect:/admin/notifications"; // Quay lại trang danh sách thông báo
 		}
-
 	    // Xoá thông báo
 	    @GetMapping("/notifications/delete/{id}")
 	    public String deleteNotification(@PathVariable Long id) {

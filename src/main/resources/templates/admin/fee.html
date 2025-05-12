@@ -226,17 +226,30 @@
                         </a>
                     </li>
 
-                    <!-- Quảm lí khoản phí -->
-                    <li class="nav-item menu-open">
-                        <a th:href="@{/admin/billing}" class="nav-link active">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <p>
-                                Quản lí khoản phí
-                            </p>
-                            <ul class = "nav nav-treeview">
-                            </ul>
-                        </a>
+                    <li class="nav-item">
+                      <a href="" class="nav-link active">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>
+                          Quản lý khoản nộp
+                          <i class="fas fa-angle-left right"></i>
+                        </p>
+                      </a>
+                      <ul class="nav nav-treeview" style="display: none;">
+                        <li class="nav-item">
+                          <a th:href="@{/admin/billing/fee}" class="nav-link active">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Phí</p>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a th:href="@{/admin/billing/contribution}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Đóng góp</p>
+                          </a>
+                        </li>
+                      </ul>
                     </li>
+
 
                     <!-- Thông báo -->
                     <li class="nav-item">
@@ -276,7 +289,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="@{/admin/dashboard}">Home</a></li>
                             <li class="breadcrumb-item active">Admin BlueMoon</li>
                         </ol>
                     </div><!-- /.col -->
@@ -286,103 +299,31 @@
         <!-- /.content-header -->
 
         <!-- Main content -->
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="ml-auto d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill mr-2" data-toggle="modal" data-target="#modal-add-fee-type">
+                    Tạo loại phí mới
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-add-bill-item">
+                    Tạo khoản phí mới
+                </button>
+            </div>
+        </div>
 
         <section class="content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-betwwen ali">
-                            <h3 class="card-title">DANH SÁCH LOẠI ĐÓNG GÓP</h3>
-                            <div class="ml-auto">
-                                <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-add-contribution-type">
-                                    Tạo loại đóng góp mới
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <table id="contribution" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Tên khoản đóng góp</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Duyệt qua danh sách -->
-                                <tr th:each="contribution : ${contributionTypes}">
-                                    <td th:text="${contribution.name}">Tên khoản đóng góp</td>
-                                    <td class="text-center align-middle" style="width: 100px;">
-                                        <form th:action="@{/admin/billing/type/delete/{id}(id=${contribution.id})}" method="post">
-                                            <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-betwwen ali">
-                            <h3 class="card-title">DANH SÁCH LOẠI PHÍ</h3>
-                            <div class="ml-auto">
-                                <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-add-fee-type">
-                                    Tạo loại phí mới
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <table id="fee" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Tên khoản phí</th>
-                                    <th class="text-center">Giá tiền trên 1 đơn vị</th>
-                                    <th class="text-center">Đơn vị</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Duyệt qua danh sách -->
-                                <tr th:each="fee : ${feeTypes}">
-                                    <td th:text="${fee.name}">Tên khoản phí</td>
-                                    <td th:text="${fee.pricePerUnit}">Giá tiền trên 1 đơn vị</td>
-                                    <td th:text="${fee.unit}">Đơn vị</td>
-                                    <td class="text-center align-middle" style="width: 100px;">
-                                        <form th:action="@{/admin/billing/type/delete/{id}(id=${fee.id})}" method="post">
-                                            <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="card">
-                <div class="card-header d-flex justify-content-betwwen ali">
-                    <h3 class="card-title">DANH SÁCH KHOẢN THU</h3>
-                    <div class="ml-auto">
-                        <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-add-bill-item">
-                            Tạo khoản thu mới
-                        </button>
-                    </div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">DANH SÁCH KHOẢN PHÍ CHƯA NỘP</h3>
                 </div>
+                
                 <div class="card-body">
-
-                    <form th:action="@{/admin/billing}" method="get" class="mb-3">
+                    <form th:action="@{/admin/billing/fee}" method="get" class="mb-3">
                         <div class="row">
                             <div class="col">
-                                <input type="text" name="billTypeName" class="form-control" placeholder="Tên khoản nộp" />
+                                <input type="text" name="billTypeName" class="form-control" placeholder="Tên khoản phí" />
                             </div>
                             <div class="col">
                                 <input type="text" name="apartmentId" class="form-control" placeholder="Căn hộ" />
-                            </div>
-                            <div class="col">
-                                <select name="status" class="form-control">
-                                    <option value="">Tất cả</option>
-                                    <option value="true">Đã nộp</option>
-                                    <option value="false">Chưa nộp</option>
-                                </select>
                             </div>
                             <div class="col">
                                 <input type="date" name="fromDate" class="form-control" placeholder="Từ ngày" />
@@ -398,23 +339,80 @@
                     <table id="item" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th class="text-center">Tên khoản nộp</th>
+                            <th class="text-center">Tên khoản phí</th>
                             <th class="text-center">Căn hộ</th>
                             <th class="text-center">Tổng tiền</th>
                             <th class="text-center">Hạn nộp</th>
-                            <th class="text-center">Trạng thái</th>
                         </tr>
                         </thead>
                         <tbody>
                         <!-- Duyệt qua danh sách -->
-                        <tr th:each="item : ${billItems}">
-                            <td th:text="${item.billTypeName}">Tên khoản nộp</td>
+                        <tr th:each="item : ${feeItems}">
+                            <td th:text="${item.billTypeName}">Tên khoản phí</td>
                             <td th:text="${item.apartmentId}">Căn hộ</td>
                             <td th:text="${item.totalAmount}">Tổng tiền</td>
                             <td th:text="${item.dueDate}">Hạn nộp</td>
-                            <td th:text="${item.status ? 'Đã nộp' : 'Chưa nộp'}">Trạng thái</td>
                             <td class="text-center align-middle" style="width: 100px;">
-                                <form th:action="@{/admin/billing/item/delete/{id}(id=${item.id})}" method="post">
+                                <form th:action="@{/admin/billing/fee/item/delete/{id}(id=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
+                                </form>
+                            </td>
+                            <td class="text-center align-middle" style="width: 120px;">
+                                <form th:action="@{/admin/billing/fee/item/update/{id}(id=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-success btn-sm shadow-sm rounded-pill"> <i class="fas fa-check-circle mr-1"></i> Đã nộp</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-betwwen align-items-center">
+                    <h3 class="card-title">DANH SÁCH KHOẢN PHÍ ĐÃ NỘP</h3>
+                    <div class="ml-auto d-flex gap-2">
+                        <button onclick="exportCSV()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất CSV</button>
+                        <button onclick="exportExcel()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất Excel</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/billing/fee}" method="get" class="mb-3">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="billTypeName" class="form-control" placeholder="Tên khoản phí" />
+                            </div>
+                            <div class="col">
+                                <input type="text" name="apartmentId" class="form-control" placeholder="Căn hộ" />
+                            </div>
+                            <div class="col">
+                                <input type="date" name="fromDate" class="form-control" placeholder="Từ ngày" />
+                            </div>
+                            <div class="col">
+                                <input type="date" name="toDate" class="form-control" placeholder="Đến ngày" />
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Lọc</button>
+                            </div>
+                        </div>
+                    </form>
+                    <table id="feeItemsDoneTable" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Tên khoản phí</th>
+                            <th class="text-center">Căn hộ</th>
+                            <th class="text-center">Tổng tiền</th>
+                            <th class="text-center">Hạn nộp</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Duyệt qua danh sách -->
+                        <tr th:each="item : ${feeItemsDone}">
+                            <td th:text="${item.billTypeName}">Tên khoản phí</td>
+                            <td th:text="${item.apartmentId}">Căn hộ</td>
+                            <td th:text="${item.totalAmount}">Tổng tiền</td>
+                            <td th:text="${item.dueDate}">Hạn nộp</td>
+                            <td class="text-center align-middle" style="width: 100px;">
+                                <form th:action="@{/admin/billing/fee/item/delete/{id}(id=${item.id})}" method="post">
                                     <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm rounded-pill"> <i class="fas fa-trash-alt mr-1"></i> Xóa</button>
                                 </form>
                             </td>
@@ -446,6 +444,89 @@
 
     <!-- jQuery -->
     <script th:src="@{/js/jquery.min.js}"></script>
+
+
+
+    <script>
+        function exportCSV() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản phí", "Căn hộ", "Tổng tiền", "Hạn nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("feeItemsDoneTable");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length - 1; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo chuỗi CSV
+            var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    
+            // Tạo liên kết tải về file CSV
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "billItemsDone.csv");
+    
+            // Tải file
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        function exportExcel() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản phí", "Căn hộ", "Tổng tiền", "Hạn nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("feeItemsDoneTable");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length - 1; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo worksheet từ mảng dữ liệu
+            var ws = XLSX.utils.aoa_to_sheet(rows);
+    
+            // Tạo workbook từ worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Fee Items");
+    
+            // Tạo liên kết tải về file Excel
+            XLSX.writeFile(wb, "billItemsDone.xlsx");
+        }
+    </script>
+    
+
     <!-- Bootstrap -->
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
     <!-- AdminLTE -->
@@ -456,7 +537,7 @@
     <!-- AdminLTE for demo purposes -->
     <script th:src="@{/js/demo.js}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="@{/js/pages/dashboard3.js}"></script>
+    <script src="@{/js/pages/dashboard3.js}"></script>    
 
     <div class="modal fade" id="modal-add-fee-type" tabindex="-1" role="dialog" aria-labelledby="addFeeType" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -497,39 +578,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal-add-contribution-type" tabindex="-1" role="dialog" aria-labelledby="addContributionType" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="addContributionType">Tạo khoản đóng góp mới</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Đóng">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <form th:action="@{/admin/billing/addContributionType}" method="post">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Tên khoản đóng góp</label>
-                            <input type="text" class="form-control" name="name" id="name" required placeholder="Nhập tên khoản đóng góp">
-                        </div>
-
-                        <input type="hidden" name="pricePerUnit" value="1">
-
-                        <input type="hidden" name="unit" value="VND">
-
-                        <input type="hidden" name="isContribution" value="true">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Tạo</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="modal-add-bill-item" tabindex="-1" role="dialog" aria-labelledby="addBillItem" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -540,14 +588,14 @@
                     </button>
                 </div>
 
-                <form th:action="@{/admin/billing/addBillItem}" method="post">
+                <form th:action="@{/admin/billing/fee/addBillItem}" method="post">
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="billTypeName">Tên khoản nộp</label>
+                            <label for="billTypeName">Tên khoản phí</label>
                             <select name="billTypeName" id="billTypeName" required>
                                 <option value="" selected disabled>Chưa chọn</option>
-                                <option th:each="type : ${billTypes}"
+                                <option th:each="type : ${feeTypes}"
                                         th:value="${type.name}"
                                         th:text="${type.name}">
                                 </option>
@@ -566,8 +614,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="quantity">Số đơn vị sử dụng/Số tiền đóng góp</label>
-                            <input type="number" class="form-control" name="quantity" id="quantity" required placeholder="Số đơn vị sử dụng/Số tiền đóng góp">
+                            <label for="quantity">Số đơn vị sử dụng</label>
+                            <input type="number" class="form-control" name="quantity" id="quantity" required placeholder="Số đơn vị sử dụng">
                         </div>
 
                         <div class="form-group">
@@ -590,6 +638,9 @@
         </div>
     </div>
 </div>
+
 </body>
 
 </html>
+
+

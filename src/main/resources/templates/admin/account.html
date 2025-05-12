@@ -33,7 +33,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a th:href="@{/admin/admin_dashboard.html}" class="nav-link">Home</a>
+        <a th:href="@{/admin/admin_dashboard}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -230,12 +230,27 @@
          
           <!-- Quảm lí khoản phí -->
           <li class="nav-item">
-            <a th:href="@{/admin/billing}"class="nav-link">
+            <a href="" class="nav-link">
               <i class="fas fa-file-invoice-dollar"></i>
               <p>
-                Quản lí khoản phí
+                Quản lý khoản nộp
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a th:href="@{/admin/billing/fee}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Phí</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/admin/billing/contribution}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Đóng góp</p>
+                </a>
+              </li>
+            </ul>
           </li>
           
           
