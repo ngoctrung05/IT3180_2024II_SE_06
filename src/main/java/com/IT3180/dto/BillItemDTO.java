@@ -1,13 +1,7 @@
 package com.IT3180.dto;
 
-import lombok.*;
-
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BillItemDTO {
     private Long id;
     private String billTypeName; // Tên loại phí
@@ -58,7 +52,22 @@ public class BillItemDTO {
 	public void setTotalAmount(Long totalAmount) {
 		this.totalAmount = totalAmount;
 	}
-
-
+	public BillItemDTO(Long id, String billTypeName, Long apartmentId, Long quantity, Boolean status, LocalDate dueDate,
+			Long totalAmount) {
+		super();
+		this.id = id;
+		this.billTypeName = billTypeName;
+		this.apartmentId = apartmentId;
+		this.quantity = quantity;
+		this.status = status;
+		this.dueDate = dueDate;
+		this.totalAmount = totalAmount;
+	}
+	public BillItemDTO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+    
+    
 }
 

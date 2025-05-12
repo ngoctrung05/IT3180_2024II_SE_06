@@ -24,4 +24,10 @@ public interface BillItemRepository extends JpaRepository<BillItem, Long> {
                                  @Param("status") Boolean status,
                                  @Param("fromDate") LocalDate fromDate,
                                  @Param("toDate") LocalDate toDate);
+    
+    @Query("SELECT b.dueDate FROM BillItem b WHERE b.apartment.id = (SELECT u.apartment.id FROM User u WHERE u.id = :userId)")
+    List<LocalDate> findDueDatesByUserId(@Param("userId") Long userId);
+    
+ // Tìm các BillItem có status = 1 và dueDate trước ngày được cung cấp
+    List<BillItem> findByStatusAndDueDateBefore(int status, LocalDate dueDate);
 }

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import com.IT3180.model.Resident;
 import com.IT3180.repository.ResidentRepository;
 import jakarta.persistence.EntityNotFoundException;
+import com.IT3180.model.BillItem;
+import java.time.LocalTime;
 
 import java.util.List;
 import java.util.Optional;
