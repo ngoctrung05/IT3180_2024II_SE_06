@@ -16,6 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.IT3180.services.NotificationsServices;
+import com.IT3180.model.Notifications;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.IT3180.services.NotificationsServices;
 import com.IT3180.model.Notifications;
@@ -43,7 +47,6 @@ public class UserController {
     	model.addAttribute("notifications", notifications);
         return "user/user_dashboard";  
     } 
-
     @GetMapping("/billing")
     public String billing (
             @AuthenticationPrincipal UserDetails userDetails,

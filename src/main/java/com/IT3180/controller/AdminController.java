@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.IT3180.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +37,7 @@ import com.IT3180.services.BillService;
 import com.IT3180.services.ResidentService;
 import com.IT3180.services.NotificationsServices;
 import com.IT3180.model.Notifications;
+import com.IT3180.model.Complaint;
 
 @Controller
 @RequestMapping ("/admin")
@@ -53,6 +55,9 @@ public class AdminController {
     private EmailService emailService;
 	@Autowired
 	private NotificationsServices notificationsServices;
+  
+	@Autowired
+	private ComplaintService complaintService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 	 @GetMapping("/dashboard")
@@ -104,11 +109,18 @@ public class AdminController {
 	
 	@GetMapping ("/notifications")
 	public String showSendEmailForm(Model model) {
-        List<Notifications> notifications = notificationsServices.findAll();
+        List<Notifications> notifications = notificationsServices.getAllNotifications();
         model.addAttribute("notifications", notifications);
         model.addAttribute("emailRequest", new EmailRequest());
         return "admin/notifications"; // Trả về trang Thymeleaf
     }
+
+	@GetMapping("/complaints")
+	public String complaint(Model model){
+		 List<Complaint> complaints = complaintService.getAllComplaints();
+		 model.addAttribute("complaints", complaints);
+		 return "admin/complaints";
+	}
 	
 	 @PostMapping("/account/delete/{id}")
 	 public String deleteAccount(@PathVariable Long id) 
@@ -344,7 +356,6 @@ public class AdminController {
 
 		    return "redirect:/admin/notifications"; // Quay lại trang danh sách thông báo
 		}
-
 	    // Xoá thông báo
 	    @GetMapping("/notifications/delete/{id}")
 	    public String deleteNotification(@PathVariable Long id) {
