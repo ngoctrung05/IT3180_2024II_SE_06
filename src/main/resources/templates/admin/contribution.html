@@ -339,6 +339,8 @@
                 <div class="card-header d-flex justify-content-betwwen ali">
                     <h3 class="card-title">DANH SÁCH KHOẢN ĐÓNG GÓP</h3>
                     <div class="ml-auto">
+                        <button onclick="exportCSV()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất CSV</button>
+                        <button onclick="exportExcel()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất Excel</button>
                         <button type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill" data-toggle="modal" data-target="#modal-add-bill-item">
                             Tạo khoản đóng góp mới
                         </button>
@@ -366,7 +368,7 @@
                             </div>
                         </div>
                     </form>
-                    <table id="item" class="table table-bordered table-hover">
+                    <table id="contributionItems" class="table table-bordered table-hover">
                         <thead>
                         <tr>
                             <th class="text-center">Tên khoản đóng góp</th>
@@ -426,6 +428,86 @@
     <script th:src="@{/js/demo.js}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="@{/js/pages/dashboard3.js}"></script>
+
+    
+    <script>
+        function exportCSV() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản đóng góp", "Tổng tiền", "Ngày nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("contributionItems");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length - 1; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo chuỗi CSV
+            var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    
+            // Tạo liên kết tải về file CSV
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "billContribution.csv");
+    
+            // Tải file
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        function exportExcel() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản đóng góp", "Căn hộ", "Tổng tiền", "Ngày nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("contributionItems");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length - 1; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo worksheet từ mảng dữ liệu
+            var ws = XLSX.utils.aoa_to_sheet(rows);
+    
+            // Tạo workbook từ worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Contribution Items");
+    
+            // Tạo liên kết tải về file Excel
+            XLSX.writeFile(wb, "billContribution.xlsx");
+        }
+    </script>
 
     <div class="modal fade" id="modal-add-contribution-type" tabindex="-1" role="dialog" aria-labelledby="addContributionType" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -504,7 +586,7 @@
 
                         <div class="form-group">
                             <label for="dueDate">Ngày nộp</label>
-                            <input type="date" class="form-control" name="dueDate" id="dueDate" required placeholder="Hạn nộp">
+                            <input type="date" class="form-control" name="dueDate" id="dueDate" required placeholder="Ngày nộp">
                         </div>
                     </div>
 

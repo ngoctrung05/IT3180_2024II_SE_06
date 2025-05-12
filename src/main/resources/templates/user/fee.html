@@ -284,34 +284,6 @@
         <!-- Main content -->
 
         <section class="content">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-betwwen ali">
-                            <h3 class="card-title">DANH SÁCH LOẠI PHÍ</h3>
-                        </div>
-                        <div class="card-body">
-                            <table id="fee" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Tên khoản phí</th>
-                                    <th class="text-center">Giá tiền trên 1 đơn vị</th>
-                                    <th class="text-center">Đơn vị</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- Duyệt qua danh sách -->
-                                <tr th:each="fee : ${feeTypes}">
-                                    <td th:text="${fee.name}">Tên khoản phí</td>
-                                    <td th:text="${fee.pricePerUnit}">Giá tiền trên 1 đơn vị</td>
-                                    <td th:text="${fee.unit}">Đơn vị</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="card">
                 <div class="card-header d-flex justify-content-betwwen ali">
                     <h3 class="card-title">DANH SÁCH KHOẢN PHÍ CHƯA NỘP</h3>
@@ -339,9 +311,13 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-betwwen ali">
                     <h3 class="card-title">DANH SÁCH KHOẢN PHÍ ĐÃ NỘP</h3>
+                    <div class="ml-auto d-flex gap-2">
+                        <button onclick="exportCSV()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất CSV</button>
+                        <button onclick="exportExcel()" type="button" class="btn btn-outline-primary btn-sm shadow-sm rounded-pill">Xuất Excel</button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <table id="item" class="table table-bordered table-hover">
+                    <table id="feeItemsDoneTable" class="table table-bordered table-hover">
                         <thead>
                         <tr>
                             <th class="text-center">Tên khoản phí</th>
@@ -394,6 +370,85 @@
     <script th:src="@{/js/demo.js}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="@{/js/pages/dashboard3.js}"></script>
+
+    <script>
+        function exportCSV() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản phí", "Tổng tiền", "Hạn nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("feeItemsDoneTable");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo chuỗi CSV
+            var csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    
+            // Tạo liên kết tải về file CSV
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "billItemsDone.csv");
+    
+            // Tải file
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        function exportExcel() {
+            var rows = [];
+    
+            // Lấy các tiêu đề cột
+            rows.push(["Tên khoản phí", "Tổng tiền", "Hạn nộp"]);
+    
+            // Duyệt qua các hàng trong bảng để lấy dữ liệu
+            var table = document.getElementById("feeItemsDoneTable");
+            var rowsInTable = table.getElementsByTagName("tr");
+    
+            // Bắt đầu từ chỉ số 1 (bỏ qua hàng tiêu đề)
+            for (var i = 1; i < rowsInTable.length; i++) {
+                var cells = rowsInTable[i].getElementsByTagName("td");
+                var row = [];
+    
+                // Lấy dữ liệu từ các cột và thêm vào row
+                for (var j = 0; j < cells.length; j++) {  // Bỏ qua cột nút xóa
+                    row.push(cells[j].innerText);
+                }
+    
+                // Thêm hàng vào mảng rows
+                rows.push(row);
+            }
+    
+            // Tạo worksheet từ mảng dữ liệu
+            var ws = XLSX.utils.aoa_to_sheet(rows);
+    
+            // Tạo workbook từ worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Fee Items");
+    
+            // Tạo liên kết tải về file Excel
+            XLSX.writeFile(wb, "billItemsDone.xlsx");
+        }
+    </script>
 </div>
 </body>
 
