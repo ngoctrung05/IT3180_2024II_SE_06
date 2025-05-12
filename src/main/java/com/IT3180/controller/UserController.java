@@ -18,6 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import com.IT3180.services.NotificationsServices;
+import com.IT3180.model.Notifications;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping ("/user")
@@ -26,7 +30,21 @@ public class UserController {
     private BillService billService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private NotificationsServices notificationsServices;
 
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) 
+ 	{
+    	List<Notifications> notifications = notificationsServices.getAllNotifications();
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (Notifications notification : notifications) {
+            // Chuyển đổi LocalDateTime thành String đã định dạng
+            notification.setFormatDate(notification.getCreatedAt().format(formatter));
+        }
+    	model.addAttribute("notifications", notifications);
+        return "user/user_dashboard";  
+    } 
     @GetMapping("/billing")
     public String billing (
             @AuthenticationPrincipal UserDetails userDetails,
@@ -46,6 +64,18 @@ public class UserController {
         List<BillItemDTO> billItemsDone = billService.getBillItems(null, user.getApartment().getId(), true, null, null);
         model.addAttribute("billItemsDone", billItemsDone);
         return "user/billing";
+    }
+    
+    @GetMapping("/notifications")
+    public String notifications(Model model) {
+    	List<Notifications> notifications = notificationsServices.getAllNotifications();
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (Notifications notification : notifications) {
+            // Chuyển đổi LocalDateTime thành String đã định dạng
+            notification.setFormatDate(notification.getCreatedAt().format(formatter));
+        }
+    	model.addAttribute("notifications", notifications);
+    	return "user/notifications";
     }
 }
 

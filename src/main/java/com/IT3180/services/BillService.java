@@ -9,7 +9,8 @@ import com.IT3180.model.BillType;
 import com.IT3180.repository.ApartmentRepository;
 import com.IT3180.repository.BillItemRepository;
 import com.IT3180.repository.BillTypeRepository;
-import com.IT3180.repository.BillItemRepository;
+import java.time.temporal.ChronoUnit;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -95,5 +96,18 @@ public class BillService {
     public Long getAllBillType ()
     {
     	return billTypeRepository.count();
+    }
+    
+    @Scheduled(cron = "0 0 0 * * ?")  // Chạy mỗi ngày lúc 00:00
+    public void deleteBillItemsByStatusAndDueDate() {
+        LocalDate currentDate = LocalDate.now();  // Lấy ngày hiện tại
+        LocalDate dueDateThreshold = currentDate.minusDays(45);  // Tính ngày đã qua 45 ngày
+
+        // Tìm tất cả các BillItem có status = 1 và dueDate đã qua 45 ngày
+        List<BillItem> billItems = billItemRepository.findByStatusAndDueDateBefore(1, dueDateThreshold);
+
+        if (!billItems.isEmpty()) {
+            billItemRepository.deleteAll(billItems);  // Xóa tất cả các BillItem thỏa mãn điều kiện
+        }
     }
 }
