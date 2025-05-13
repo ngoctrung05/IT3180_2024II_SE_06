@@ -296,12 +296,12 @@
                     <h3 class="card-title">DANH SÁCH KHOẢN PHÍ CHƯA NỘP</h3>
                 </div>
                 <div class="card-body">
-                    <table id="item" class="table table-bordered table-hover">
+                    <table id="feeItemsTable" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th class="text-center">Tên khoản phí</th>
-                            <th class="text-center">Tổng tiền</th>
-                            <th class="text-center">Hạn nộp</th>
+                            <th class="text-center" onclick="sortTable(0, 'fee')">Tên khoản phí</th>
+                            <th class="text-center" onclick="sortTable(1, 'fee')">Tổng tiền</th>
+                            <th class="text-center" onclick="sortTable(2, 'fee')">Hạn nộp</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -327,9 +327,9 @@
                     <table id="feeItemsDoneTable" class="table table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th class="text-center">Tên khoản phí</th>
-                            <th class="text-center">Tổng tiền</th>
-                            <th class="text-center">Hạn nộp</th>
+                            <th class="text-center" onclick="sortTable(0, 'Done')">Tên khoản phí</th>
+                            <th class="text-center" onclick="sortTable(1, 'Done')">Tổng tiền</th>
+                            <th class="text-center" onclick="sortTable(2, 'Done')">Hạn nộp</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -454,6 +454,35 @@
     
             // Tạo liên kết tải về file Excel
             XLSX.writeFile(wb, "billItemsDone.xlsx");
+        }
+    </script>
+
+    <script>
+        function sortTable(columnIndex, tableType) {
+            const tableId = tableType === 'Done' ? 'feeItemsDoneTable' : 'feeItemsTable';
+            const table = document.getElementById(tableId);
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.rows);
+            let isNumeric = !isNaN(rows[0].cells[columnIndex].innerText.trim());
+            let isAscending = table.getAttribute("data-sort-dir") !== "asc";
+            
+            rows.sort((rowA, rowB) => {
+                let cellA = rowA.cells[columnIndex].innerText.trim();
+                let cellB = rowB.cells[columnIndex].innerText.trim();
+
+                if (isNumeric) {
+                    cellA = parseFloat(cellA) || 0;
+                    cellB = parseFloat(cellB) || 0;
+                }
+
+                if (cellA < cellB) return isAscending ? -1 : 1;
+                if (cellA > cellB) return isAscending ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+
+            table.setAttribute("data-sort-dir", isAscending ? "asc" : "desc");
         }
     </script>
 </div>
