@@ -233,6 +233,13 @@
           <i class="fas fa-th-large"></i>
         </a>
       </li>
+      <li class="nav-item">
+  <form th:action="@{/logout}" method="post">
+    <button type="submit" class="btn btn-link nav-link text-danger" style="padding: 0 0.75rem;">
+      <i class="fas fa-sign-out-alt"></i> Đăng xuất
+    </button>
+  </form>
+</li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -283,12 +290,7 @@
           
          
           <!-- Quản lí tài khoản -->
-          <li class="nav-item">
-                <a th:href="@{/user/account}" class="nav-link">
-                  <i class="fas fa-user-shield"></i>
-                  <p>Tài khoản</p>
-                </a>
-              </li>
+      
          
           <!-- Quảm lí khoản phí -->
           <li class="nav-item">
