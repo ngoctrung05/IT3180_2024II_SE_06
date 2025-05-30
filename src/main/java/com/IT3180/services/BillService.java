@@ -141,4 +141,8 @@ public class BillService {
             billItemRepository.deleteAll(billItems);  // Xóa tất cả các BillItem thỏa mãn điều kiện
         }
     }
+
+    @Scheduled(cron = "0 0 1 1 * ?")
+    public void createFixedBills() {
+    }
 }
