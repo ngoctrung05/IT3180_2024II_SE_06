@@ -10,6 +10,8 @@ import com.IT3180.repository.ApartmentRepository;
 import com.IT3180.repository.BillItemRepository;
 import com.IT3180.repository.BillTypeRepository;
 import java.time.temporal.ChronoUnit;
+import com.IT3180.model.User;
+import com.IT3180.repository.UserRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
@@ -24,6 +26,8 @@ public class BillService {
 	private BillTypeRepository billTypeRepository;
 	@Autowired
 	private ApartmentRepository apartmentRepository;
+    @Autowired
+    private UserRepository userRepository;
 	 // Thêm loại phí
     public void addBillType(BillType billType) {
         billTypeRepository.save(billType);
@@ -142,7 +146,52 @@ public class BillService {
         }
     }
 
+    private void autoCreateServiceFee(User user) {
+        Apartment apartment = user.getApartment();
+        if(apartment == null) {
+            return;
+        }
+        Double area = apartment.getArea();
+        long quantity = area.longValue();
+        BillType serviceFeeType = billTypeRepository.findByName("Phí dịch vụ chung cư")
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phí 'Phí dịch vụ chung cư'"));
+
+        BillItem billItem = new BillItem();
+        billItem.setApartment(apartment);
+        billItem.setBillType(serviceFeeType);
+        billItem.setQuantity(quantity); // Số lượng chính là diện tích m2
+        billItem.setStatus(false); // chưa nộp
+        billItem.setDueDate(LocalDate.now().withDayOfMonth(10)); // hạn nộp là ngày 10 tháng này
+
+        billItemRepository.save(billItem);
+    }
+
+    private void autoCreateManageFee(User user) {
+        Apartment apartment = user.getApartment();
+        if(apartment == null) {
+            return;
+        }
+        Double area = apartment.getArea();
+        long quantity = area.longValue();
+        BillType serviceFeeType = billTypeRepository.findByName("Phí quản lý chung cư")
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phí 'Phí quản lý chung cư'"));
+
+        BillItem billItem = new BillItem();
+        billItem.setApartment(apartment);
+        billItem.setBillType(serviceFeeType);
+        billItem.setQuantity(quantity); // Số lượng chính là diện tích m2
+        billItem.setStatus(false); // chưa nộp
+        billItem.setDueDate(LocalDate.now().withDayOfMonth(10)); // hạn nộp là ngày 10 tháng này
+
+        billItemRepository.save(billItem);
+    }
+
     @Scheduled(cron = "0 0 1 1 * ?")
     public void createFixedBills() {
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            autoCreateManageFee(user);
+            autoCreateServiceFee(user);
+        }
     }
 }

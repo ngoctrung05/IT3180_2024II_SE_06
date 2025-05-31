@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Optional;
 import java.time.LocalDateTime;
 
 @Service
@@ -23,25 +22,8 @@ public class NotificationsServices {
         notificationsRepository.save(notifications);
     }
 
-    public List<Notifications> findAll() {
-        return notificationsRepository.findAll();
-    }
-
     public Notifications findById(Long id) {
         return notificationsRepository.findById(id).orElse(null);
-    }
-    // Phương thức cập nhật
-    public Notifications update(Long id, Notifications newNotificationData) {
-        Optional<Notifications> existingNotification = notificationsRepository.findById(id);
-        if (existingNotification.isPresent()) {
-            Notifications notification = existingNotification.get();
-            notification.setTitle(newNotificationData.getTitle());
-            notification.setContent(newNotificationData.getContent());
-            notification.setCreatedAt(newNotificationData.getCreatedAt());
-            return notificationsRepository.save(notification);
-        } else {
-            return null; // hoặc throw exception nếu muốn
-        }
     }
 
     // Phương thức xoá
